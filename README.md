@@ -1,3 +1,5 @@
+![n8n_newletter_workflow](https://github.com/user-attachments/assets/24f0e016-2e3a-4136-8134-a473cd94f613)
+
 ## n8n Newsletter Project
 
 This project automates the process of collecting, rating, and sending newsletter articles using n8n. It integrates RSS feeds, AI-based article rating and summarization, and automated email delivery.
