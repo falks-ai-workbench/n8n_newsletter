@@ -29,6 +29,10 @@ The workflow is divided into three main sections:
 - **Email Formatting:** High-rated articles are formatted into an HTML email.
 - **Send Newsletter:** The formatted newsletter is sent via Gmail using OAuth2 credentials.
 
+### **Installation Instruction**
+- **Install n8n via Docker:** https://www.youtube.com/watch?v=dC2Q_cyzgjg&t=331s
+- **Install Ollama (via Docker):** https://github.com/ollama/ollama
+- **Download & Upload Newsletter_Automation.json:** Or create a new workflow in n8n and copy&paste the json file.
 
 ### **Setup Instructions**
 
