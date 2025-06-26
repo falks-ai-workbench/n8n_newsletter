@@ -90,8 +90,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -900,
-        -520
+        -880,
+        -560
       ],
       "id": "6b3dd7fb-e6d0-4b0a-b90e-aad30f039853",
       "name": "Set UserPrompt"
@@ -105,7 +105,7 @@
       "typeVersion": 2,
       "position": [
         -300,
-        -600
+        -580
       ],
       "id": "153c2704-db7a-437f-b86e-afcc81fef4f1",
       "name": "Parse Output to JSON"
@@ -153,7 +153,7 @@
       "typeVersion": 2.2,
       "position": [
         -80,
-        -600
+        -580
       ],
       "id": "b3647c5b-2d39-4592-bcfa-1a59602e8e78",
       "name": "Rating 7+"
@@ -226,7 +226,7 @@
     },
     {
       "parameters": {
-        "sendTo": "fgebser@googlemail.com",
+        "sendTo": "your_email@gmail.com",
         "subject": "AI News",
         "message": "=Hello AI Nerd,\n\nhere is your weekly dose of AI News.\n\n{{ $json.newsletter }}",
         "options": {}
@@ -234,8 +234,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        960,
-        -300
+        980,
+        -140
       ],
       "id": "040c7f49-3516-43d2-8bff-55b7bf7dbe6d",
       "name": "Send Email Newsletter",
@@ -308,7 +308,7 @@
     },
     {
       "parameters": {
-        "content": "## Set your RSS Feed and interests\nNext Steps. Save content in a DB. I want to filter out just unsend articles\nPrepare the workflow for every1\nUpload Workflow to your Repo on Github\n\n\n",
+        "content": "## Set your RSS Feed and interests\n- Setup your RSS Feed in the RSS-Feed Node -> double check if you get all needed columns\n- Change your interests in the Set-Node \"Set Userprompt\"\n- Update your Postgres credentials\n\n\n",
         "height": 800,
         "width": 880,
         "color": 3
@@ -324,7 +324,7 @@
     },
     {
       "parameters": {
-        "content": "## Rate Articles, summarize. Just keep articles who have a rating 7+\n",
+        "content": "## Rate Articles, summarize. Just keep articles who have a rating 7+\n- Download from Ollama: Model QWEN3 14B-q4 and Model gemma3:latest or choose one of your local models",
         "height": 800,
         "width": 1060,
         "color": 5
@@ -340,7 +340,7 @@
     },
     {
       "parameters": {
-        "content": "## Prepare and send Newsletter",
+        "content": "## Prepare and send Newsletter\n- Add your Google Auth2 cred for Gmail\n- Change the Email adress to your desired one",
         "height": 800,
         "width": 780,
         "color": 4
@@ -610,7 +610,8 @@
             "title": "={{ $json.title }}",
             "word_count": "={{ $json.word_count }}",
             "pup_date": "={{ $json.isoDate }}",
-            "score": "={{ $json.rating }}"
+            "score": "={{ $json.rating }}",
+            "relevant": true
           },
           "matchingColumns": [
             "id"
@@ -692,8 +693,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        600,
-        -140
+        780,
+        -360
       ],
       "id": "deb81770-297e-45c1-8d8a-711533aea50e",
       "name": "Insert records >=7",
@@ -828,6 +829,11 @@
       "main": [
         [
           {
+            "node": "Format HTML EMail",
+            "type": "main",
+            "index": 0
+          },
+          {
             "node": "Insert records >=7",
             "type": "main",
             "index": 0
@@ -959,13 +965,7 @@
     },
     "Insert records >=7": {
       "main": [
-        [
-          {
-            "node": "Format HTML EMail",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
@@ -973,11 +973,36 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "46c3a42c-bd20-4db4-915c-77fbf26fb592",
+  "versionId": "ebdf7803-f0c9-4179-8dc8-f815285f3ccb",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7d384291e91e15297c920da411b4548e6ae4d741e04867a6c78ba5c13a77872b"
   },
   "id": "D52UhboStgsiDVAm",
-  "tags": []
+  "tags": [
+    {
+      "name": "Gmail",
+      "id": "t8g1bzyYGQM5ggH6",
+      "createdAt": "2025-06-26T18:21:38.576Z",
+      "updatedAt": "2025-06-26T18:21:38.576Z"
+    },
+    {
+      "name": "Postgres",
+      "id": "qIGNsK2mwRhrvcaf",
+      "createdAt": "2025-06-26T18:21:42.917Z",
+      "updatedAt": "2025-06-26T18:21:42.917Z"
+    },
+    {
+      "name": "RSS",
+      "id": "clxg6SupwN47TnEt",
+      "createdAt": "2025-06-26T18:21:48.079Z",
+      "updatedAt": "2025-06-26T18:21:48.079Z"
+    },
+    {
+      "name": "n8n-local",
+      "id": "cYOPW2d1pSfhhhgG",
+      "createdAt": "2025-06-26T18:22:07.129Z",
+      "updatedAt": "2025-06-26T18:22:07.129Z"
+    }
+  ]
 }
