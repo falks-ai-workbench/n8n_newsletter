@@ -6,8 +6,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -1580,
-        -400
+        -1820,
+        -340
       ],
       "id": "123481d3-0b79-4714-9a0e-25029d68342e",
       "name": "When clicking ‘Execute workflow’"
@@ -20,8 +20,8 @@
       "type": "n8n-nodes-base.rssFeedRead",
       "typeVersion": 1.1,
       "position": [
-        -1380,
-        -400
+        -1480,
+        -520
       ],
       "id": "4ef0bcc5-7dca-41e6-adb5-0ef214c1e775",
       "name": "RSS Read"
@@ -53,6 +53,12 @@
               "name": "content",
               "value": "={{ $json.content }}",
               "type": "string"
+            },
+            {
+              "id": "00c5dbec-9f43-4cf2-b1d4-d14e56cc2075",
+              "name": "word_count",
+              "value": "={{ $json.word_count }}",
+              "type": "string"
             }
           ]
         },
@@ -61,7 +67,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1160,
+        -1040,
         -400
       ],
       "id": "ae5263dc-0d4a-433a-9a8a-fc40603cea53",
@@ -172,7 +178,7 @@
       "typeVersion": 2,
       "position": [
         180,
-        -260
+        -300
       ],
       "id": "51469de3-d400-4410-93f9-30bfe3df7a1b",
       "name": "Parse Output JSON",
@@ -200,7 +206,7 @@
       "typeVersion": 1,
       "position": [
         420,
-        -360
+        -340
       ],
       "id": "2146269b-3af2-4b27-9935-9cb78254466b",
       "name": "No Operation, do nothing2"
@@ -212,7 +218,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        620,
+        780,
         -140
       ],
       "id": "f3a0385f-ccc0-4c33-8990-e06d5d602dcc",
@@ -228,8 +234,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        820,
-        -140
+        960,
+        -300
       ],
       "id": "040c7f49-3516-43d2-8bff-55b7bf7dbe6d",
       "name": "Send Email Newsletter",
@@ -249,7 +255,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
       "typeVersion": 1,
       "position": [
-        -660,
+        -620,
         -320
       ],
       "id": "cecc8919-8b7b-4a09-9d55-8d62520954b1",
@@ -284,29 +290,14 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=You are a helpful summarizer.\n\n{{ $json.content }}\n\nGoal\nWrite a summary of maximum 170 words.\n\nRules\nDo NOT translate the text.\n\nAlways use the same language as the input text.\n\nIf the input is in German, write the summary in German. If the input is in English, write the summary in English. If the input is in another language, use that language for the summary.\n\nDo not add any explanations or comments.\n\nOutput JSON:\n{\n\"title\": \"{{ $json.title }}\",\n\"summary\": \"...\"\n}",
-        "batching": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.chainLlm",
-      "typeVersion": 1.7,
-      "position": [
-        -180,
-        -260
-      ],
-      "id": "a0b43f07-0bf8-4868-a910-cddf252150f6",
-      "name": "Summaryze Article"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
         "text": "={{ $json.system_prompt }}",
         "batching": {}
       },
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.7,
       "position": [
-        -680,
-        -520
+        -700,
+        -560
       ],
       "id": "a3c98eb4-dfe8-4e85-a0ed-2414c98f560f",
       "name": "Rating & Tagging Articles",
@@ -317,9 +308,9 @@
     },
     {
       "parameters": {
-        "content": "## Set your RSS Feed and interests\nNext Steps. Save content in a DB. I want to filter out just unsend articles\nPrepair the workflow for every1\nUpload Workflow to your Repo on Github\n\n\n",
+        "content": "## Set your RSS Feed and interests\nNext Steps. Save content in a DB. I want to filter out just unsend articles\nPrepare the workflow for every1\nUpload Workflow to your Repo on Github\n\n\n",
         "height": 800,
-        "width": 860,
+        "width": 880,
         "color": 3
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -333,7 +324,7 @@
     },
     {
       "parameters": {
-        "content": "## Rate Articles, summaryze. Just keep articles who have a rating 7+\n",
+        "content": "## Rate Articles, summarize. Just keep articles who have a rating 7+\n",
         "height": 800,
         "width": 1060,
         "color": 5
@@ -349,9 +340,9 @@
     },
     {
       "parameters": {
-        "content": "## Prepair and send Newsletter",
+        "content": "## Prepare and send Newsletter",
         "height": 800,
-        "width": 620,
+        "width": 780,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -364,15 +355,354 @@
       "name": "Sticky Note2"
     },
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE SCHEMA IF NOT EXISTS ai_references;\n\nCREATE TABLE IF NOT EXISTS ai_references.n8n_newsletter (\n    id SERIAL PRIMARY KEY,\n    title VARCHAR(255) NOT NULL,\n    word_count INTEGER,\n    import_date TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,\n    pup_date TIMESTAMPTZ,\n    relevant BOOLEAN NOT NULL DEFAULT false,\n    score INTEGER NOT NULL DEFAULT 1 CHECK (score BETWEEN 1 AND 10)\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1620,
+        -340
+      ],
+      "id": "c72d432b-c327-46b1-8366-7709cd9f8345",
+      "name": "Create DB and Schema if not exists",
+      "credentials": {
+        "postgres": {
+          "id": "nGHKHAU22fwIvYvp",
+          "name": "Postgres - Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "ai_references",
+          "mode": "list",
+          "cachedResultName": "ai_references"
+        },
+        "table": {
+          "__rl": true,
+          "value": "n8n_newsletter",
+          "mode": "list",
+          "cachedResultName": "n8n_newsletter"
+        },
+        "limit": 500,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1460,
+        -160
+      ],
+      "id": "082655e9-3e98-4f99-bf16-65122d4de2ab",
+      "name": "Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "nGHKHAU22fwIvYvp",
+          "name": "Postgres - Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "title",
+              "field2": "title"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.compareDatasets",
+      "typeVersion": 2.3,
+      "position": [
+        -1240,
+        -300
+      ],
+      "id": "2df777fb-9f0e-426d-b545-ef09bdd52aa8",
+      "name": "Compare Datasets"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a helpful summarizer.\n\n{{ $json.content }}\n\nGoal\nWrite a summary of maximum 170 words.\n\nRules\nDo NOT translate the text.\n\nAlways use the same language as the input text.\n\nIf the input is in German, write the summary in German. If the input is in English, write the summary in English. If the input is in another language, use that language for the summary.\n\nDo not add any explanations or comments.\n\nOutput JSON:\n{\n\"title\": \"{{ $json.title }}\",\n\"summary\": \"...\"\n}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        -180,
+        -240
+      ],
+      "id": "a0b43f07-0bf8-4868-a910-cddf252150f6",
+      "name": "Summarize Article",
+      "retryOnFail": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Zählt die Wörter im content-Feld und fügt das Ergebnis als word_count hinzu\nconst content = $input.item.json.content || \"\";\nconst wordCount = content\n  .replace(/<[^>]*>/g, ' ') // HTML-Tags entfernen, falls vorhanden\n  .trim()\n  .split(/\\s+/)\n  .filter(Boolean)\n  .length;\n\n$input.item.json.word_count = wordCount;\nreturn $input.item;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1300,
+        -520
+      ],
+      "id": "268a046b-5035-4379-833b-dbd1cbcc7963",
+      "name": "Count words"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "title",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
       "position": [
         180,
         -520
       ],
-      "id": "7efa76a5-0d64-46b6-b96c-a480fac85409",
-      "name": "Articles less then 7"
+      "id": "12795406-8265-4e5d-8776-69b7cfa8b007",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "ai_references",
+          "mode": "list",
+          "cachedResultName": "ai_references"
+        },
+        "table": {
+          "__rl": true,
+          "value": "n8n_newsletter",
+          "mode": "list",
+          "cachedResultName": "n8n_newsletter"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $json.title }}",
+            "word_count": "={{ $json.word_count }}",
+            "pup_date": "={{ $json.isoDate }}",
+            "score": "={{ $json.rating }}",
+            "relevant": false
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "word_count",
+              "displayName": "word_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "import_date",
+              "displayName": "import_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pup_date",
+              "displayName": "pup_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "relevant",
+              "displayName": "relevant",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        420,
+        -520
+      ],
+      "id": "f16b306b-0bf1-4055-8b68-ed526d5f885e",
+      "name": "Insert records <7",
+      "credentials": {
+        "postgres": {
+          "id": "nGHKHAU22fwIvYvp",
+          "name": "Postgres - Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "ai_references",
+          "mode": "list",
+          "cachedResultName": "ai_references"
+        },
+        "table": {
+          "__rl": true,
+          "value": "n8n_newsletter",
+          "mode": "list",
+          "cachedResultName": "n8n_newsletter"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $json.title }}",
+            "word_count": "={{ $json.word_count }}",
+            "pup_date": "={{ $json.isoDate }}",
+            "score": "={{ $json.rating }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "word_count",
+              "displayName": "word_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "import_date",
+              "displayName": "import_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "pup_date",
+              "displayName": "pup_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "relevant",
+              "displayName": "relevant",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "score",
+              "displayName": "score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        600,
+        -140
+      ],
+      "id": "deb81770-297e-45c1-8d8a-711533aea50e",
+      "name": "Insert records >=7",
+      "credentials": {
+        "postgres": {
+          "id": "nGHKHAU22fwIvYvp",
+          "name": "Postgres - Supabase"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -381,7 +711,7 @@
       "main": [
         [
           {
-            "node": "RSS Read",
+            "node": "Create DB and Schema if not exists",
             "type": "main",
             "index": 0
           }
@@ -392,7 +722,7 @@
       "main": [
         [
           {
-            "node": "Reduce informations",
+            "node": "Count words",
             "type": "main",
             "index": 0
           }
@@ -409,6 +739,11 @@
           },
           {
             "node": "Merge Data LLM+RSS",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge",
             "type": "main",
             "index": 1
           }
@@ -441,7 +776,7 @@
       "main": [
         [
           {
-            "node": "Summaryze Article",
+            "node": "Summarize Article",
             "type": "main",
             "index": 0
           },
@@ -464,7 +799,7 @@
         ],
         [
           {
-            "node": "Articles less then 7",
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
@@ -493,7 +828,7 @@
       "main": [
         [
           {
-            "node": "Format HTML EMail",
+            "node": "Insert records >=7",
             "type": "main",
             "index": 0
           }
@@ -526,19 +861,8 @@
       "ai_languageModel": [
         [
           {
-            "node": "Summaryze Article",
+            "node": "Summarize Article",
             "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Summaryze Article": {
-      "main": [
-        [
-          {
-            "node": "Parse Output JSON",
-            "type": "main",
             "index": 0
           }
         ]
@@ -561,13 +885,95 @@
           }
         ]
       ]
+    },
+    "Create DB and Schema if not exists": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Compare Datasets": {
+      "main": [
+        [
+          {
+            "node": "Reduce informations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize Article": {
+      "main": [
+        [
+          {
+            "node": "Parse Output JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Count words": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Insert records <7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert records >=7": {
+      "main": [
+        [
+          {
+            "node": "Format HTML EMail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "2bb086a1-3f5b-48a3-a146-72bf79b42d3b",
+  "versionId": "46c3a42c-bd20-4db4-915c-77fbf26fb592",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7d384291e91e15297c920da411b4548e6ae4d741e04867a6c78ba5c13a77872b"
