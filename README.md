@@ -1,3 +1,5 @@
+![n8n_newletter_workflow](https://github.com/user-attachments/assets/24f0e016-2e3a-4136-8134-a473cd94f613)
+
 ## n8n Newsletter Project
 
 This project automates the process of collecting, rating, and sending newsletter articles using n8n. It integrates RSS feeds, AI-based article rating and summarization, and automated email delivery.
@@ -29,6 +31,10 @@ The workflow is divided into three main sections:
 - **Email Formatting:** High-rated articles are formatted into an HTML email.
 - **Send Newsletter:** The formatted newsletter is sent via Gmail using OAuth2 credentials.
 
+### **Installation Instruction**
+- **Install n8n via Docker:** https://www.youtube.com/watch?v=dC2Q_cyzgjg&t=331s
+- **Install Ollama (via Docker):** https://github.com/ollama/ollama
+- **Download & Upload Newsletter_Automation.json:** Or create a new workflow in n8n and copy&paste the json file.
 
 ### **Setup Instructions**
 
