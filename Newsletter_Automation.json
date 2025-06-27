@@ -6,8 +6,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -1820,
-        -340
+        -1800,
+        -440
       ],
       "id": "123481d3-0b79-4714-9a0e-25029d68342e",
       "name": "When clicking ‘Execute workflow’"
@@ -188,7 +188,7 @@
     {
       "parameters": {
         "mode": "combine",
-        "fieldsToMatchString": "title",
+        "combineBy": "combineAll",
         "options": {}
       },
       "type": "n8n-nodes-base.merge",
@@ -198,7 +198,9 @@
         -140
       ],
       "id": "98a20c9b-c1e8-4f3e-a7e2-0c834f3e040f",
-      "name": "Merge Data Summary + rest"
+      "name": "Merge Data Summary + rest",
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {},
@@ -226,7 +228,7 @@
     },
     {
       "parameters": {
-        "sendTo": "your_email@gmail.com",
+        "sendTo": "fgebser@googlemail.com",
         "subject": "AI News",
         "message": "=Hello AI Nerd,\n\nhere is your weekly dose of AI News.\n\n{{ $json.newsletter }}",
         "options": {}
@@ -704,19 +706,33 @@
           "name": "Postgres - Supabase"
         }
       }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "daysInterval": 3,
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1800,
+        -220
+      ],
+      "id": "f67b0231-d8fa-4612-afa1-34a8f36092d2",
+      "name": "Schedule Trigger"
     }
   ],
   "pinData": {},
   "connections": {
     "When clicking ‘Execute workflow’": {
       "main": [
-        [
-          {
-            "node": "Create DB and Schema if not exists",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "RSS Read": {
@@ -967,13 +983,24 @@
       "main": [
         []
       ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Create DB and Schema if not exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "ebdf7803-f0c9-4179-8dc8-f815285f3ccb",
+  "versionId": "d72d98ae-09b7-4ad0-b255-1decfe0191b8",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "7d384291e91e15297c920da411b4548e6ae4d741e04867a6c78ba5c13a77872b"
@@ -981,28 +1008,28 @@
   "id": "D52UhboStgsiDVAm",
   "tags": [
     {
-      "name": "Gmail",
-      "id": "t8g1bzyYGQM5ggH6",
       "createdAt": "2025-06-26T18:21:38.576Z",
-      "updatedAt": "2025-06-26T18:21:38.576Z"
+      "updatedAt": "2025-06-26T18:21:38.576Z",
+      "id": "t8g1bzyYGQM5ggH6",
+      "name": "Gmail"
     },
     {
-      "name": "Postgres",
-      "id": "qIGNsK2mwRhrvcaf",
       "createdAt": "2025-06-26T18:21:42.917Z",
-      "updatedAt": "2025-06-26T18:21:42.917Z"
+      "updatedAt": "2025-06-26T18:21:42.917Z",
+      "id": "qIGNsK2mwRhrvcaf",
+      "name": "Postgres"
     },
     {
-      "name": "RSS",
-      "id": "clxg6SupwN47TnEt",
       "createdAt": "2025-06-26T18:21:48.079Z",
-      "updatedAt": "2025-06-26T18:21:48.079Z"
+      "updatedAt": "2025-06-26T18:21:48.079Z",
+      "id": "clxg6SupwN47TnEt",
+      "name": "RSS"
     },
     {
-      "name": "n8n-local",
-      "id": "cYOPW2d1pSfhhhgG",
       "createdAt": "2025-06-26T18:22:07.129Z",
-      "updatedAt": "2025-06-26T18:22:07.129Z"
+      "updatedAt": "2025-06-26T18:22:07.129Z",
+      "id": "cYOPW2d1pSfhhhgG",
+      "name": "n8n-local"
     }
   ]
 }
